@@ -1,23 +1,67 @@
 import React from 'react'
+import BackendService from "../util/BackendService";
+import ChatService from "../util/ChatService";
 
 class Login extends React.Component {
     state = {
         username: '',
         password: '',
-        error:''
+        error: ''
     };
-    handleSubmit=(event)=> {
+    chatService = new ChatService();
+
+    connect() {
+        this.chatService.connect(this.login);
+    }
+
+    handleSubmit = (event) => {
         event.preventDefault();
-        console.log("submited");
+        this.setState({error: ''});
+        if (this.state.username.length == 0 || this.state.password.length == 0) {
+            this.setState({error: 'fill username and password'});
+            return;
+        }
+        let backend = new BackendService();
+        let currentObj=this;
+        backend.login({login: this.state.username, password: this.state.password}).then(res => {
+            if (!res) {
+                this.setState({error: 'can not login'});
+                return;
+            } else {
+
+                if (!res.auth) {
+                    this.setState({error: res.errorMsg});
+                    this.setState({login: ''});
+                    this.setState({password: ''});
+                    return;
+                }
+                if (res.auth) {
+                    localStorage.setItem('token', res.token);
+                    localStorage.setItem('name', res.login);
+                    this.setState({error: ''});
+                    if (res.isAdmin) {
+                        //todo  this.router.navigate(['rooms']);
+                    } else {
+                        this.connect();
+                        //todo this.router.navigate(['roomSelect']);
+                    }
+
+                }
+            }
+        }).catch(er=> {
+
+            currentObj.setState({error:er.message});
+        });
     };
 
-    handleUsernameChange=(event)=> {
-       this.setState({ username:event.target.value});
+    handleUsernameChange = (event) => {
+        this.setState({username: event.target.value});
     };
 
-    handlePasswordChange=(event) =>{
-      this.setState({ password:event.target.value})
+    handlePasswordChange = (event) => {
+        this.setState({password: event.target.value})
     };
+
     render() {
         return (
             <div className="col-md-4 m-auto">
@@ -30,11 +74,13 @@ class Login extends React.Component {
                         <form onSubmit={this.handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="username">Username</label>
-                                <input type="text" value={this.state.username} onChange={this.handleUsernameChange} className="form-control" placeholder="Username"/>
+                                <input type="text" value={this.state.username} onChange={this.handleUsernameChange}
+                                       className="form-control" placeholder="Username"/>
                             </div>
                             <div className=" form-group">
                                 <label htmlFor=" password">Password</label>
-                                <input type="password" className=" form-control"  placeholder=" Password" value={this.state.password} onChange={this.handlePasswordChange}/>
+                                <input type="password" className=" form-control" placeholder=" Password"
+                                       value={this.state.password} onChange={this.handlePasswordChange}/>
                             </div>
                             <button className="btn btn-success " type="submit">Login
                             </button>
@@ -42,12 +88,12 @@ class Login extends React.Component {
                         </form>
                     </div>
 
+                </div>
             </div>
-    </div>
-    )
+        )
     }
 
 
 }
 
-export  default Login;
+export default Login;

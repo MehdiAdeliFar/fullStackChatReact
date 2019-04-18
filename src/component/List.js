@@ -1,4 +1,6 @@
 import React from "react";
+import BackendService from "../util/BackendService";
+import ChatService from "../util/ChatService";
 
 class List extends React.Component {
     state = {
@@ -7,16 +9,50 @@ class List extends React.Component {
         rooms: [],
         qRooms: []
     };
-    logout = (event) => {
+    chatService=new ChatService();
+    componentDidMount() {
+        let backend = new BackendService();
+        this.getLoginName();
+        backend.getRooms().then(roomList => {
+            this.setState({rooms:roomList});
+            this.checkConnection();
+        }).catch(er => {
+            //todo this.router.navigate(['login'];
+        });
 
+
+    }
+    checkConnection() {
+        if (!this.chatService.socket) {
+            this.chatService.connect(this.login);
+        }
+    }
+
+
+    disconnect() {
+        this.chatService.disconnect();
+    }
+    getLoginName() {
+        const item = localStorage.getItem('name');
+        this.setState({login: item});
+    }
+
+    logout = (event) => {
+        localStorage.clear();
+        this.disconnect();
+        //todo this.router.navigate(['login']);
     };
     handleSearchQueryChanged = (event) => {
         this.setState({searchQuery: event.target.value});
-    }
-    ;
-    join=roomName=>{
-
+        this.setState({qRooms: this.state.rooms.filter(vid => vid.name.includes(this.state.searchQuery))});
     };
+
+
+    join = roomName => {
+        this.chatService.join(roomName);
+        //todo this.router.navigate(['chats']);
+    };
+
     render() {
         return (
             <div className="container">
@@ -62,7 +98,6 @@ class List extends React.Component {
                                     </tr>
                                 )
                             )}
-
 
 
                         </table>

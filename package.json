@@ -3,12 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axion": "^0.1.0",
+    "axios": "^0.18.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
     "bootstrap": "^4.3.1",
+    "core-js": "^2.5.4",
+    "express": "^4.16.4",
     "jquery": "^3.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.2",
+    "nodemon": "^1.18.11",
     "popper": "^1.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "2.1.8"
+    "react-scripts": "^2.1.8",
+    "rxjs": "6.0.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0",
+    "uuid": "^3.3.2",
+    "zone.js": "^0.8.26"
   },
   "scripts": {
     "start": "react-scripts start",

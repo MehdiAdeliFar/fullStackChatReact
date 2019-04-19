@@ -22,7 +22,6 @@ class BackendService {
 
     getHttpOptions() {
         const item = localStorage.getItem('token') != null ? localStorage.getItem('token') : '';
-
         return {
             headers: {'Content-Type': 'application/json', 'x-access-token': item}
         };
@@ -53,7 +52,6 @@ class BackendService {
     }
 
     addRoom(selectedRoom) {
-
         return axios.put(this.apiAddress + '/room', JSON.stringify(selectedRoom), this.getHttpOptions());
     }
 

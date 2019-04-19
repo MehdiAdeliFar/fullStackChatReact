@@ -40,7 +40,9 @@ class Register extends React.Component {
                     this.setState({error: 'can not register maybe username is exits!!!'});
                     return;
                 } else {
-                    //todo this.router.navigate(['login']);
+                    const { history } = this.props;
+                    if (history) history.push("/login");
+                    else this.setState({error:'history not found in props'});
                 }
             }
         }).catch(er => {

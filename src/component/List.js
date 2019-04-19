@@ -13,11 +13,15 @@ class List extends React.Component {
     componentDidMount() {
         let backend = new BackendService();
         this.getLoginName();
+        let currentObj=this
         backend.getRooms().then(roomList => {
-            this.setState({rooms:roomList});
+            this.setState({rooms:roomList.data});
+            this.setState({qRooms:this.state.rooms});
             this.checkConnection();
         }).catch(er => {
-            //todo this.router.navigate(['login'];
+            const { history } = currentObj.props;
+            if (history) history.push("/login");
+            else this.setState({error:'history not found in props'});
         });
 
 
@@ -40,7 +44,9 @@ class List extends React.Component {
     logout = (event) => {
         localStorage.clear();
         this.disconnect();
-        //todo this.router.navigate(['login']);
+        const { history } = this.props;
+        if (history) history.push("/login");
+        else this.setState({error:'history not found in props'});
     };
     handleSearchQueryChanged = (event) => {
         this.setState({searchQuery: event.target.value});
@@ -48,9 +54,12 @@ class List extends React.Component {
     };
 
 
-    join = roomName => {
-        this.chatService.join(roomName);
-        //todo this.router.navigate(['chats']);
+    join = (event) => {
+        console.log(event);
+        this.chatService.join(event);
+        const { history } = this.props;
+        if (history) history.push("/chats");
+        else this.setState({error:'history not found in props'});
     };
 
     render() {
@@ -87,12 +96,12 @@ class List extends React.Component {
                             {this.state.qRooms.map(room => (
                                     <tr>
                                         <td>{room.name}</td>
-                                        <td>{room.name}</td>
+
                                         <td>{room.date} </td>
                                         <td>{room.members.length}</td>
                                         <td>
                                             <button
-                                                onClick={this.join(room.name)} className="btn btn-secondary">Join
+                                                onClick={this.join.bind(this,room.name)}  className="btn btn-secondary">Join
                                             </button>
                                         </td>
                                     </tr>

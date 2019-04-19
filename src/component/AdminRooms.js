@@ -20,17 +20,21 @@ class AdminRooms extends React.Component {
         this.setState({login: item});
     }
     getRooms() {
+        let currentObj=this;
         this.backend.getAdminRooms().then(roomList => {
-            this.setState({rooms: roomList});
+            this.setState({rooms: roomList.data});
+            this.setState({qRooms: roomList.data});
         }).catch(er => {
-            //todo this.router.navigate(['login'];
+            const { history } = currentObj.props;
+            if (history) history.push("/login");
         });
     }
 
     logout = (event) => {
         localStorage.clear();
         this.disconnect();
-        //todo this.router.navigate(['login']);
+        const { history } = this.props;
+        if (history) history.push("/login");
     };
     handleSearchQueryChange = (event) => {
         this.setState({searchQuery: event.target.value});
@@ -46,7 +50,7 @@ class AdminRooms extends React.Component {
         return (
             <div className="container">
                 <nav className=" navbar navbar-light bg-light justify-content-between">
-                    <a href="/admin-edit-room" className="btn btn-success">Add new Room</a>
+                    <a href="/edit-room" className="btn btn-success">Add new Room</a>
                     <a href="/admin-room-log" className="btn btn-info">Show Events</a>
                     <a href="/history" className="btn btn-info">Show Messages history</a>
 
@@ -88,12 +92,12 @@ class AdminRooms extends React.Component {
                                     <td>{room.name}</td>
                                     <td>{room.date} </td>
                                     <td>{room.members.length}</td>
-                                    <td><a href="/history/{room.name}" className="btn btn-secondary">Show Messages</a>
+                                    <td><a href={'/history/'+room.name} className="btn btn-secondary">Show Messages</a>
                                     </td>
-                                    <td><a href="/admin-edit-room/{room._id}" className="btn btn-secondary">Update</a>
+                                    <td><a href={'/edit-room/'+room._id} className="btn btn-secondary">Update</a>
                                     </td>
                                     <td>
-                                        <button onClick={this.deleteRoom(room)} className="btn btn-danger">Delete
+                                        <button onClick={this.deleteRoom.bind(this,room)} className="btn btn-danger">Delete
                                         </button>
                                     </td>
                                 </tr>

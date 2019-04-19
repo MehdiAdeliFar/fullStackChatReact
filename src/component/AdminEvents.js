@@ -11,9 +11,12 @@ class AdminEvents extends React.Component {
         this.getEvents();
     }
     getEvents(){
+        let currentObj=this;
         let backend=new BackendService();
-        backend.getAdminEvents().subscribe(event => this.setState({events : event}), er => {
-            //todo  this.router.navigate(['login']);
+        backend.getAdminEvents().then(event => this.setState({events : event.data}), er => {
+            const {history} = currentObj.props;
+            if (history) history.push("/login");
+            else this.setState({error: 'history not found in props'});
         });
     }
     getLoginName() {
@@ -23,7 +26,9 @@ class AdminEvents extends React.Component {
     logout = (event) => {
         localStorage.clear();
         this.disconnect();
-        //todo this.router.navigate(['login']);
+        const {history} = this.props;
+        if (history) history.push("/login");
+        else this.setState({error: 'history not found in props'});
     };
     render() {
         return (

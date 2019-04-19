@@ -12,12 +12,12 @@ class AdminMessage extends React.Component {
     }
     getMessages(){
         let backend=new BackendService();
-        //todo cahnge this section
-        const roomName = this.route.snapshot.paramMap.get('name');
+        const roomName = this.props.match.params.name;
+        // const roomName = this.route.snapshot.paramMap.get('name');
         if (roomName != null) {
-            backend.getMessagesByRoomName(roomName).subscribe(v => this.setState({messages : v}));
+            backend.getMessagesByRoomName(roomName).then(v => this.setState({messages : v.data}));
         } else {
-            backend.getMessages().subscribe(v => this.setState({messages : v}));
+            backend.getMessages().then(v => this.setState({messages : v.data}));
         }
     }
     getLoginName() {
@@ -27,14 +27,16 @@ class AdminMessage extends React.Component {
     logout = (event) => {
         localStorage.clear();
         this.disconnect();
-        //todo this.router.navigate(['login']);
+        const {history} = this.props;
+        if (history) history.push("/login");
+        else this.setState({error: 'history not found in props'});
     };
 
     render() {
         return (
             <div className="container">
                 <nav className=" navbar navbar-light bg-light justify-content-between">
-                    <a href="/rooms" className="btn btn-secondary">Back</a>
+                    <a href="/admin-rooms" className="btn btn-secondary">Back</a>
 
                     <span className="float-right">
     {this.state.login}

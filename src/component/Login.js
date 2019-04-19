@@ -11,7 +11,7 @@ class Login extends React.Component {
     chatService = new ChatService();
 
     connect() {
-        this.chatService.connect(this.login);
+        this.chatService.connect(localStorage.getItem("name"));
     }
 
     handleSubmit = (event) => {

@@ -1,6 +1,5 @@
 import React from "react";
-import styles from '../chatStyle.css';
-// import  BackendService from "../util/BackendService";
+import  '../chatStyle.css';
 import ChatService from "../util/ChatService";
 
 class Chat extends React.Component {
@@ -11,14 +10,15 @@ class Chat extends React.Component {
         chatMessages: [],
         message: ''
     };
-    chatService = new ChatService();
-
+    // chatService = new ChatService();
+    chatService=ChatService;
     componentDidMount() {
 
         this.getLoginName();
         this.setState({room: this.chatService.roomName});
         if (!this.chatService.socket) {
-            //todo this.router.navigate(['login']);
+            const { history } = this.props;
+            if (history) history.push("/login");
         } else {
             if (!this.chatService.roomName || this.state.room.length < 1) {
                 this.logout();
@@ -37,7 +37,9 @@ class Chat extends React.Component {
     logout = () => {
         localStorage.clear();
         this.disconnect();
-        //todo this.router.navigate(['login']);
+        const { history } = this.props;
+        if (history) history.push("/login");
+
     };
 
     getLoginName() {
@@ -47,7 +49,9 @@ class Chat extends React.Component {
 
     leave = event => {
         this.chatService.leave();
-        //todo this.router.navigate(['roomSelect']);
+        const { history } = this.props;
+        if (history) history.push("/list");
+
     };
     handleTextChange = event => {
         this.setState({message: event.target.value})

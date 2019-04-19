@@ -6,7 +6,7 @@ class AdminRoomEdit extends React.Component {
         error: '',
         id: '-1',
         roomName: '',
-        roomStatus: '',
+        roomStatus: 'active',
         login: '',
         selectedRoom: {}
     };
@@ -14,11 +14,17 @@ class AdminRoomEdit extends React.Component {
 
     componentDidMount() {
         this.getLoginName();
-        //todo const routeId = this.route.snapshot.paramMap.get('id');
-        let routeId = 1;
+        const routeId = this.props.match.params.id; //route.snapshot.paramMap.get('id');
         if (routeId != null) {
             this.setState({id: routeId});
-            this.backend.getRoom(this.id).subscribe(v => this.setState({selectedRoom: v}));
+            this.backend.getRoom(this.id).then(v => {
+                this.setState({selectedRoom: v.data});
+                this.setState({roomName: this.state.selectedRoom.name});
+                this.setState({id: this.state.selectedRoom._id});
+                this.setState({roomStatus: this.state.selectedRoom.status});
+
+            });
+
         }
     }
 
@@ -34,20 +40,39 @@ class AdminRoomEdit extends React.Component {
         this.setState({roomStatus: event.target.value});
     };
     handleSubmit = event => {
+
         this.setState({error: ''});
-        if (!this.state.selectedRoom.name) {
-            this.error = 'Please Enter the name of Room!';
+        if (!this.state.roomName) {
+            this.setState({error: 'Please Enter the name of Room!'});
             return;
         }
-        if (this.selectedRoom._id != null) {
-            this.backend.updateRoom(this.selectedRoom).subscribe(a => {
-                //todo this.router.navigate(['rooms']);
-            }, er => this.router.navigate(['login']));
-        } else {
-            this.backend.addRoom(this.selectedRoom).subscribe(a => {
-                //todo this.router.navigate(['rooms'])
+        let currentObj = this;
+
+        if (this.state.selectedRoom._id != null) {
+            let newSelectedRoom=this.state.selectedRoom;
+            newSelectedRoom.name=this.state.roomStatus;
+            newSelectedRoom.status=this.state.roomStatus;
+
+            this.backend.updateRoom(newSelectedRoom).subscribe(a => {
+                const {history} = this.props;
+                if (history) history.push("/admin-rooms");
+                else this.setState({error: 'history not found in props'});
+
             }, er => {
-                //todo  this.router.navigate(['login'])
+                const {history} = currentObj.props;
+                if (history) history.push("/login");
+                else this.setState({error: 'history not found in props'});
+            });
+        } else {
+            this.backend.addRoom({name: this.state.roomName, status: this.state.roomStatus}).then(a => {
+                debugger;
+                const {history} = this.props;
+                if (history) history.push("/admin-rooms");
+                else this.setState({error: 'history not found in props'});
+            }, er => {
+                const {history} = currentObj.props;
+                if (history) history.push("/login");
+                else this.setState({error: 'history not found in props'});
             });
         }
     };
@@ -59,7 +84,7 @@ class AdminRoomEdit extends React.Component {
                 <h4 className="alert-danger">{this.state.error}</h4>
                 <div className="card">
                     <div className="card-header">
-                        {this.state.id != '-1' ? 'Edit Room' : 'Add Room'}}
+                        {this.state.id != '-1' ? 'Edit Room' : 'Add Room'}
                     </div>
                     <div className="card-body">
                         <form onSubmit={this.handleSubmit}>
@@ -87,9 +112,8 @@ class AdminRoomEdit extends React.Component {
                                     </table>
 
                                     <div className="row">
-                                        <button
-                                            onClick={this.getBack} className="btn btn-secondary m-3">Back
-                                        </button>
+                                        <a href="/admin-rooms" className="btn btn-secondary m-3">Back</a>
+
                                         <button
                                             type="submit"
                                             className="btn btn-secondary m-3">{this.state.id == '-1' ? 'Add' : 'Update'}

@@ -1,19 +1,35 @@
 import React from "react";
+import BackendService from "../util/BackendService";
 
 class AdminEvents extends React.Component {
     state = {
         login: '',
         events:[]
     };
+    componentDidMount() {
+        this.getLoginName();
+        this.getEvents();
+    }
+    getEvents(){
+        let backend=new BackendService();
+        backend.getAdminEvents().subscribe(event => this.setState({events : event}), er => {
+            //todo  this.router.navigate(['login']);
+        });
+    }
+    getLoginName() {
+        const item = localStorage.getItem('name');
+        this.setState({login: item});
+    }
     logout = (event) => {
-
+        localStorage.clear();
+        this.disconnect();
+        //todo this.router.navigate(['login']);
     };
-
     render() {
         return (
             <div className="container">
                 <nav className=" navbar navbar-light bg-light justify-content-between">
-                    <a href="/rooms" className="btn btn-secondary">Back</a>
+                    <a href="/admin-rooms" className="btn btn-secondary">Back</a>
 
                     <span className="float-right">
     {this.state.login}

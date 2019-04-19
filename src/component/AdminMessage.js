@@ -1,12 +1,33 @@
 import React from "react";
+import BackendService from "../util/BackendService";
 
 class AdminMessage extends React.Component {
     state = {
         login: '',
         messages: []
     };
+    componentDidMount() {
+        this.getLoginName();
+        this.getMessages();
+    }
+    getMessages(){
+        let backend=new BackendService();
+        //todo cahnge this section
+        const roomName = this.route.snapshot.paramMap.get('name');
+        if (roomName != null) {
+            backend.getMessagesByRoomName(roomName).subscribe(v => this.setState({messages : v}));
+        } else {
+            backend.getMessages().subscribe(v => this.setState({messages : v}));
+        }
+    }
+    getLoginName() {
+        const item = localStorage.getItem('name');
+        this.setState({login: item});
+    }
     logout = (event) => {
-
+        localStorage.clear();
+        this.disconnect();
+        //todo this.router.navigate(['login']);
     };
 
     render() {

@@ -1,5 +1,6 @@
 import React from "react";
-import BackendService from "../util/BackendService";
+import styles from '../chatStyle.css';
+// import  BackendService from "../util/BackendService";
 import ChatService from "../util/ChatService";
 
 class Chat extends React.Component {
@@ -53,7 +54,9 @@ class Chat extends React.Component {
     };
     handleSubmit = (event) => {
         event.preventDefault();
-        if (this.state.message.length < 1) { return; }
+        if (this.state.message.length < 1) {
+            return;
+        }
         this.chatService.sendMessage(this.state.message);
         const el = document.getElementById('token');
         el.scrollIntoView();
@@ -63,6 +66,7 @@ class Chat extends React.Component {
     render() {
         return (
             <div className="container">
+
                 <nav className=" navbar navbar-light bg-light">
                     <span>{this.state.room}</span>
                     <span>{this.state.login}</span>

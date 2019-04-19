@@ -5,7 +5,7 @@ class BackendService {
     httpOptions = {
         headers: {'Content-Type': 'application/json'}
     };
-    apiAddress = `http://localhost:3000/api`;
+    apiAddress = `http://localhost:3001/api`;
     // apiAddress = `http://${location.hostname}:3000/api`;
     data = {};
 

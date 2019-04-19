@@ -24,26 +24,31 @@ class Login extends React.Component {
         let backend = new BackendService();
         let currentObj=this;
         backend.login({login: this.state.username, password: this.state.password}).then(res => {
-            if (!res) {
+            if (!res.data) {
                 this.setState({error: 'can not login'});
                 return;
             } else {
 
-                if (!res.auth) {
-                    this.setState({error: res.errorMsg});
+                if (!res.data.auth) {
+                    this.setState({error: res.data.errorMsg});
                     this.setState({login: ''});
                     this.setState({password: ''});
                     return;
                 }
-                if (res.auth) {
-                    localStorage.setItem('token', res.token);
-                    localStorage.setItem('name', res.login);
+                if (res.data.auth) {
+                    localStorage.setItem('token', res.data.token);
+                    localStorage.setItem('name', this.state.username);
                     this.setState({error: ''});
-                    if (res.isAdmin) {
-                        //todo  this.router.navigate(['rooms']);
+                    const { history } = this.props;
+                    console.log(history);
+                    if (res.data.isAdmin) {
+
+                        if (history) history.push("/admin-rooms");
+                        else this.setState({error:'history not found in props'});
                     } else {
                         this.connect();
-                        //todo this.router.navigate(['roomSelect']);
+                        if (history) history.push("/list");
+                        else this.setState({error:'history not found in props'})
                     }
 
                 }

@@ -1,4 +1,5 @@
 import React from "react";
+import BackendService from "../util/BackendService";
 
 class AdminRooms extends React.Component {
     state = {
@@ -7,13 +8,38 @@ class AdminRooms extends React.Component {
         rooms: [],
         qRooms: []
     };
-    logout = (event) => {
+    backend = new BackendService();
+    componentDidMount() {
+        this.getLoginName();
+        this.getRooms();
 
+
+    }
+    getLoginName() {
+        const item = localStorage.getItem('name');
+        this.setState({login: item});
+    }
+    getRooms() {
+        this.backend.getAdminRooms().then(roomList => {
+            this.setState({rooms: roomList});
+        }).catch(er => {
+            //todo this.router.navigate(['login'];
+        });
+    }
+
+    logout = (event) => {
+        localStorage.clear();
+        this.disconnect();
+        //todo this.router.navigate(['login']);
     };
     handleSearchQueryChange = (event) => {
         this.setState({searchQuery: event.target.value});
+        this.setState({qRooms: this.state.rooms.filter(vid => vid.name.includes(this.state.searchQuery))});
     };
     deleteRoom = (room) => {
+        this.backend.deleteRoom(room._id).then(res=>{
+            this.getRooms()
+        });
     };
 
     render() {
@@ -33,7 +59,7 @@ class AdminRooms extends React.Component {
 
                 <br/>
                 <div className="row">
-                    <div className="col-md-3"></div>
+                    <div className="col-md-3"/>
                     <div className="align-self-center col-md-5">
                         <div className="form-group  ">
                             <input className="form-control" onChange={this.handleSearchQueryChange}
@@ -53,18 +79,18 @@ class AdminRooms extends React.Component {
                                 <th>Name</th>
                                 <th>Create Date</th>
                                 <th>Members</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
+                                <th/>
+                                <th/>
+                                <th/>
                             </tr>
                             {this.state.qRooms.map(room => (
                                 <tr>
                                     <td>{room.name}</td>
                                     <td>{room.date} </td>
                                     <td>{room.members.length}</td>
-                                    <td><a href="/history/{{vid.name}}" className="btn btn-secondary">Show Messages</a>
+                                    <td><a href="/history/{room.name}" className="btn btn-secondary">Show Messages</a>
                                     </td>
-                                    <td><a href="/admin-edit-room/{{vid._id}}" className="btn btn-secondary">Update</a>
+                                    <td><a href="/admin-edit-room/{room._id}" className="btn btn-secondary">Update</a>
                                     </td>
                                     <td>
                                         <button onClick={this.deleteRoom(room)} className="btn btn-danger">Delete

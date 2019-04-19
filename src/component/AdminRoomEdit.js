@@ -17,7 +17,7 @@ class AdminRoomEdit extends React.Component {
         const routeId = this.props.match.params.id; //route.snapshot.paramMap.get('id');
         if (routeId != null) {
             this.setState({id: routeId});
-            this.backend.getRoom(this.id).then(v => {
+            this.backend.getRoom(routeId).then(v => {
                 this.setState({selectedRoom: v.data});
                 this.setState({roomName: this.state.selectedRoom.name});
                 this.setState({id: this.state.selectedRoom._id});
@@ -38,6 +38,7 @@ class AdminRoomEdit extends React.Component {
     };
     handleStatusChange = event => {
         this.setState({roomStatus: event.target.value});
+
     };
     handleSubmit = event => {
 
@@ -50,10 +51,10 @@ class AdminRoomEdit extends React.Component {
 
         if (this.state.selectedRoom._id != null) {
             let newSelectedRoom=this.state.selectedRoom;
-            newSelectedRoom.name=this.state.roomStatus;
-            newSelectedRoom.status=this.state.roomStatus;
-
-            this.backend.updateRoom(newSelectedRoom).subscribe(a => {
+            newSelectedRoom.name=this.state.roomName;
+            newSelectedRoom.status=this.state.roomStatus==undefined?'active':this.state.roomStatus;
+            console.log(newSelectedRoom);
+            this.backend.updateRoom(newSelectedRoom).then(a => {
                 const {history} = this.props;
                 if (history) history.push("/admin-rooms");
                 else this.setState({error: 'history not found in props'});
@@ -65,7 +66,6 @@ class AdminRoomEdit extends React.Component {
             });
         } else {
             this.backend.addRoom({name: this.state.roomName, status: this.state.roomStatus}).then(a => {
-                debugger;
                 const {history} = this.props;
                 if (history) history.push("/admin-rooms");
                 else this.setState({error: 'history not found in props'});

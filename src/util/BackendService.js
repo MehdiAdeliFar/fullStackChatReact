@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import qs from 'qs';
 class BackendService {
 
     httpOptions = {
@@ -47,12 +47,34 @@ class BackendService {
     }
 
     updateRoom(selectedRoom) {
-
-        return axios.post(`${this.apiAddress}/room/${selectedRoom._id}`, selectedRoom, this.getHttpOptions());
+        // return axios({
+        //     method: 'post',
+        //     url: `${this.apiAddress}/room/${selectedRoom._id}`,
+        //     data: selectedRoom,
+        //     config: this.getHttpOptions()
+        // });
+        let url = `${this.apiAddress}/room/${selectedRoom._id}`;
+        let httpOptions1 = this.getHttpOptions();
+        console.log(url);
+        console.log(httpOptions1);
+        debugger;
+        return axios.post(url, selectedRoom, httpOptions1);
     }
 
     addRoom(selectedRoom) {
-        return axios.put(this.apiAddress + '/room', JSON.stringify(selectedRoom), this.getHttpOptions());
+        axios.put(this.apiAddress + '/room/test',qs.stringify( {name:"mmm"})).then(res=>{
+            console.log(res);
+        }).catch(er=>console.log(er.message));
+        let httpOptions1 = this.getHttpOptions();
+        console.log(selectedRoom);
+
+        return axios({
+            method: 'put',
+            url: this.apiAddress + '/room',
+            data: selectedRoom,
+            config: httpOptions1
+        });
+        // return axios.put(this.apiAddress + '/room', JSON.stringify(selectedRoom), this.getHttpOptions());
     }
 
     getAdminEvents() {

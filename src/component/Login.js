@@ -40,7 +40,6 @@ class Login extends React.Component {
                     localStorage.setItem('name', this.state.username);
                     this.setState({error: ''});
                     const { history } = this.props;
-                    console.log(history);
                     if (res.data.isAdmin) {
 
                         if (history) history.push("/admin-rooms");

@@ -36,7 +36,7 @@ class Register extends React.Component {
                 return;
             } else {
 
-                if (!res.done) {
+                if (!res.data.done) {
                     this.setState({error: 'can not register maybe username is exits!!!'});
                     return;
                 } else {

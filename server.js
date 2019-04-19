@@ -24,7 +24,7 @@ function sendMessage(socket, data) {
   console.log(socket.rooms);
   let userName = getUserName(socket);
   eventManager.saveEvent('send message', userName, `message: ${data.message} sent to room: ${data.roomName}`);
-  console.log('message sent from ' + socket.id);
+  console.log('message sent from ' + socket.id+'msg:'+data.message+ " room :"+data.roomName);
   eventManager.saveMessage(data.message, data.roomName, userName, "message");
   chatIo.to(data.roomName).emit('new-message', {
     text: data.message,
@@ -68,7 +68,7 @@ chatIo.on('connection', (socket) => {
       roomName: data.roomName
     });
     socket.join(data.roomName);
-    console.log("leave");
+    console.log("join");
     console.log(data);
   });
 

@@ -32,7 +32,7 @@ class AdminRooms extends React.Component {
 
     logout = (event) => {
         localStorage.clear();
-        this.disconnect();
+        // this.disconnect();
         const { history } = this.props;
         if (history) history.push("/login");
     };

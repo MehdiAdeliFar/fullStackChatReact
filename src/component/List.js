@@ -1,6 +1,7 @@
 import React from "react";
 import BackendService from "../util/BackendService";
 import ChatService from "../util/ChatService";
+import * as chatAction from "../util/chatAction";
 
 class List extends React.Component {
     state = {
@@ -27,7 +28,7 @@ class List extends React.Component {
 
     }
     checkConnection() {
-        if (!this.chatService.socket) {
+        if (!chatAction.socket) {
             this.chatService.connect(this.login);
         }
     }
@@ -55,7 +56,6 @@ class List extends React.Component {
 
 
     join = (event) => {
-        console.log(event);
         this.chatService.join(event);
         const { history } = this.props;
         if (history) history.push("/chats");

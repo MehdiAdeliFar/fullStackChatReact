@@ -1,6 +1,7 @@
 import React from "react";
-import  '../chatStyle.css';
+import '../chatStyle.css';
 import ChatService from "../util/ChatService";
+import chatAction from '../util/chatAction'
 
 class Chat extends React.Component {
 
@@ -11,21 +12,31 @@ class Chat extends React.Component {
         message: ''
     };
     // chatService = new ChatService();
-    chatService=ChatService;
+    chatService = new ChatService();
+
     componentDidMount() {
 
+
+        this.chatService = new ChatService();
         this.getLoginName();
-        this.setState({room: this.chatService.roomName});
-        if (!this.chatService.socket) {
-            const { history } = this.props;
+        this.setState({room: chatAction.roomName});
+        if (!chatAction.socket) {
+            const {history} = this.props;
             if (history) history.push("/login");
         } else {
-            if (!this.chatService.roomName || this.state.room.length < 1) {
+            console.log(chatAction);
+            if (!chatAction.roomName || chatAction.roomName.length < 1) {
                 this.logout();
                 return;
             }
         }
+        // chatAction.socket.on('new-message',  function (data) {
+        //     console.log("new message");
+        //     this.setState({chatMessages: [...this.state.chatMessages, data.data]});
+        // }.bind(this));
+
         this.chatService.getMessage().subscribe(data => {
+            console.log(this.state.chatMessages);
             this.setState({chatMessages: [...this.state.chatMessages, data]});
             const el = document.getElementById('token');
             el.scrollIntoView();
@@ -36,8 +47,8 @@ class Chat extends React.Component {
 
     logout = () => {
         localStorage.clear();
-        this.disconnect();
-        const { history } = this.props;
+        this.chatService.disconnect();
+        const {history} = this.props;
         if (history) history.push("/login");
 
     };
@@ -49,7 +60,7 @@ class Chat extends React.Component {
 
     leave = event => {
         this.chatService.leave();
-        const { history } = this.props;
+        const {history} = this.props;
         if (history) history.push("/list");
 
     };
@@ -84,29 +95,33 @@ class Chat extends React.Component {
                         <div className="card">
 
                             <div className="card-body msg_card_body">
-                                {this.state.chatMessages.map(cm => (
-                                    <div>
-                                        {cm.username != this.state.login ?
-                                            <div className="d-flex justify-content-start mb-4">
-                                                <span>{cm.username}</span>
-                                                <div className="msg_cotainer">
-                                                    {cm.text}
-                                                    <span
-                                                        className="msg_time">{cm.date}</span>
-                                                </div>
-                                            </div> : <div>
-                                                <div className="d-flex justify-content-end mb-4">
-                                                    <div className="msg_cotainer_send">
-                                                        {cm.text}
-                                                        <span
-                                                            className="msg_time_send">{cm.date}</span>
-                                                    </div>
+                                {this.state.chatMessages.map(cm => {
+                                    if (cm) {
+                                        return (
+                                            <div>
+                                                {cm.username != this.state.login ?
+                                                    <div className="d-flex justify-content-start mb-4">
+                                                        <span>{cm.username}</span>
+                                                        <div className="msg_cotainer">
+                                                            {cm.text}
+                                                            <span
+                                                                className="msg_time">{cm.date}</span>
+                                                        </div>
+                                                    </div> : <div>
+                                                        <div className="d-flex justify-content-end mb-4">
+                                                            <div className="msg_cotainer_send">
+                                                                {cm.text}
+                                                                <span
+                                                                    className="msg_time_send">{cm.date}</span>
+                                                            </div>
 
-                                                    <span>{cm.username}</span>
-                                                </div>
-                                            </div>}
-                                    </div>
-                                ))}
+                                                            <span>{cm.username}</span>
+                                                        </div>
+                                                    </div>}
+                                            </div>
+                                        )
+                                    }else return (<div/>)
+                                })}
 
                             </div>
                             <span id="token"/>

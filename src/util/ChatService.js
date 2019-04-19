@@ -1,44 +1,43 @@
+
 import * as io from 'socket.io-client';
 import {Observable} from 'rxjs';
+import chatAction from "./chatAction";
 class ChatService {
-
-    socket=null;
-    roomName='';
-
 
 
     connect(username) {
 
 
-        this.socket = io(`http://localhost:3001`, {query: `username=${username}`});
+        chatAction.socket = io(`http://localhost:3001`, {query: `username=${username}`});
         // this.socket = io(`http://${location.hostname}:3000`, {query: `username=${username}`});
     }
 
     disconnect() {
         this.leave();
-        this.socket.disconnect();
+        chatAction.socket.disconnect();
     }
 
     join(roomName) {
-        this.socket.emit('join', {roomName: roomName});
-        this.roomName = roomName;
+        console.log(roomName);
+        chatAction.socket.emit('join', {roomName: roomName});
+        chatAction.roomName = roomName;
     }
 
     sendMessage(message) {
-        this.socket.emit('send-message', {roomName: this.roomName, message: message});
+        chatAction.socket.emit('send-message', {roomName: chatAction.roomName, message: message});
     }
 
     getMessage() {
         return Observable.create(observer => {
-            this.socket.on('new-message', data => {
+            chatAction.socket.on('new-message', data => {
                 observer.next(data);
             });
         });
     }
 
     leave() {
-        this.socket.emit('leave', {roomName: this.roomName});
-        this.roomName = undefined;
+        chatAction.socket.emit('leave', {roomName: chatAction.roomName});
+        chatAction.roomName = undefined;
     }
 }
 

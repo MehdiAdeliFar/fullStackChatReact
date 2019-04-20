@@ -6,24 +6,30 @@ class AdminMessage extends React.Component {
         login: '',
         messages: []
     };
+
     componentDidMount() {
+        console.log(this.props);
         this.getLoginName();
         this.getMessages();
     }
-    getMessages(){
-        let backend=new BackendService();
-        const roomName = this.props.match.params.name;
+
+    getMessages() {
+        let backend = new BackendService();
+        const roomName =this.props.match.params.name;// this.props.match.params.name;
         // const roomName = this.route.snapshot.paramMap.get('name');
+        console.log(this.props);
         if (roomName != null) {
-            backend.getMessagesByRoomName(roomName).then(v => this.setState({messages : v.data}));
+            backend.getMessagesByRoomName(roomName).then(v => this.setState({messages: v.data}));
         } else {
-            backend.getMessages().then(v => this.setState({messages : v.data}));
+            backend.getMessages().then(v => this.setState({messages: v.data}));
         }
     }
+
     getLoginName() {
         const item = localStorage.getItem('name');
         this.setState({login: item});
     }
+
     logout = (event) => {
         localStorage.clear();
         this.disconnect();
@@ -50,6 +56,7 @@ class AdminMessage extends React.Component {
                     <div className="col">
 
                         <table className="table table-hover table-bordered m-2">
+                            <thead>
                             <tr>
                                 <th>Date</th>
                                 <th>Username</th>
@@ -57,6 +64,8 @@ class AdminMessage extends React.Component {
                                 <th>Text</th>
                                 <th>Room</th>
                             </tr>
+                            </thead>
+                            <tbody>
                             {this.state.messages.map(msg => (
                                 <tr>
                                     <td>{msg.date}</td>
@@ -66,6 +75,7 @@ class AdminMessage extends React.Component {
                                     <td>{msg.roomName}</td>
                                 </tr>
                             ))}
+                            </tbody>
 
 
                         </table>

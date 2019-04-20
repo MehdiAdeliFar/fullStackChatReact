@@ -25,8 +25,8 @@ class App extends Component {
                     <Route path="/admin-rooms" component={AdminRooms}/>
                     <Route path="/edit-room/:id" component={AdminRoomEdit}/>
                     <Route path="/edit-room" component={AdminRoomEdit}/>
-                    <Route path="/history" component={AdminMessage}/>
                     <Route path="/history/:name" component={AdminMessage}/>
+                    <Route path="/history" component={AdminMessage}/>
                     <Route path="/admin-room-log" component={AdminEvents}/>
                     <Route path="/chats" component={Chat}/>
 

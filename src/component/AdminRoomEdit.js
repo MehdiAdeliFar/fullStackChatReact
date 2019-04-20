@@ -41,7 +41,7 @@ class AdminRoomEdit extends React.Component {
 
     };
     handleSubmit = event => {
-
+        event.preventDefault();
         this.setState({error: ''});
         if (!this.state.roomName) {
             this.setState({error: 'Please Enter the name of Room!'});
@@ -50,9 +50,9 @@ class AdminRoomEdit extends React.Component {
         let currentObj = this;
 
         if (this.state.selectedRoom._id != null) {
-            let newSelectedRoom=this.state.selectedRoom;
-            newSelectedRoom.name=this.state.roomName;
-            newSelectedRoom.status=this.state.roomStatus==undefined?'active':this.state.roomStatus;
+            let newSelectedRoom = this.state.selectedRoom;
+            newSelectedRoom.name = this.state.roomName;
+            newSelectedRoom.status = this.state.roomStatus == undefined ? 'active' : this.state.roomStatus;
             console.log(newSelectedRoom);
             this.backend.updateRoom(newSelectedRoom).then(a => {
                 const {history} = this.props;
@@ -90,9 +90,10 @@ class AdminRoomEdit extends React.Component {
                         <form onSubmit={this.handleSubmit}>
                             <div className="row">
 
-                                <div className="col-md-8">
+                                <div className="col-md-5">
 
                                     <table className="table table-responsive table-responsive-lg">
+                                        <tbody>
                                         <tr>
                                             <td>Name*:</td>
                                             <td><input className="form-control" value={this.state.roomName}
@@ -101,14 +102,14 @@ class AdminRoomEdit extends React.Component {
                                         <tr>
                                             <td>Status</td>
                                             <td>
-                                                <select value={this.state.roomStatus}
+                                                <select className="form-control" value={this.state.roomStatus}
                                                         onChange={this.handleStatusChange}>
                                                     <option value="active">Active</option>
                                                     <option value="inactive">Inactive</option>
                                                 </select>
                                             </td>
                                         </tr>
-
+                                        </tbody>
                                     </table>
 
                                     <div className="row">

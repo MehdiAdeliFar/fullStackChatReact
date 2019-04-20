@@ -81,6 +81,7 @@ class AdminRooms extends React.Component {
                         <table className="table table-hover table-bordered m-2">
                             <tr>
                                 <th>Name</th>
+                                <th>Status</th>
                                 <th>Create Date</th>
                                 <th>Members</th>
                                 <th/>
@@ -90,6 +91,7 @@ class AdminRooms extends React.Component {
                             {this.state.qRooms.map(room => (
                                 <tr>
                                     <td>{room.name}</td>
+                                    <td>{room.status}</td>
                                     <td>{room.date} </td>
                                     <td>{room.members.length}</td>
                                     <td><a href={'/history/'+room.name} className="btn btn-secondary">Show Messages</a>

@@ -75,7 +75,7 @@ router.put('/test',(req,res,next)=>{
 router.get('', verifyToken, (req, res, next) => {
     mongoose.connect(config.dbAddress, er => {
         if (er) throw er;
-        roomModel.find({}, (err, data) => {
+        roomModel.find({status:'active'}, (err, data) => {
             if (err) throw err;
             res.send(data);
         })

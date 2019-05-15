@@ -1,4 +1,4 @@
-#This project is a chat application using react and node and mongo db.
+# This project is a chat application using react and node and mongo db.
 
 ## Available Scripts
 
